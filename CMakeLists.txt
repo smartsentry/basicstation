@@ -18,31 +18,7 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
 # -- Versioning with git tag
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
-	execute_process(
-		COMMAND git describe --tags --always
-		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-		OUTPUT_VARIABLE "basicstation_VERSION"
-		ERROR_QUIET
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-		if(basicstation_VERSION STREQUAL "")
-			set(basicstation_VERSION 0)
-		endif(basicstation_VERSION STREQUAL "")
-		message( STATUS "Git full version: ${basicstation_VERSION}" )
-	execute_process(
-		COMMAND /bin/bash -c "git describe --tags --abbrev=0 | cut --delimiter='v' --fields=2"
-		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-		OUTPUT_VARIABLE "basicstation_VERSION_SHORT"
-		ERROR_QUIET
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-		if(basicstation_VERSION_SHORT STREQUAL "")
-			set(basicstation_VERSION_SHORT 0)
-		endif(basicstation_VERSION_SHORT STREQUAL "")
-	message( STATUS "Git version: ${basicstation_VERSION_SHORT}" )
-else(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
-	set(basicstation_VERSION_SHORT 0)
-	set(basicstation_VERSION 0)
-endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
+include (GitTagVersion)
 
 # -- Current date
 execute_process(
@@ -100,7 +76,7 @@ target_compile_options(
 		PUBLIC
 		-Wall
 	#	-Wextra
-		-DCFG_version="${basicstation_VERSION}"
+		-DCFG_version="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
 		-DCFG_bdate="${DATE}"
 		-DCFG_commit="${COMMIT}"
 		# following four definitions are the same for all platform
@@ -216,7 +192,7 @@ endif()
 target_compile_definitions(
 		${LIB}
 		PRIVATE
-		VERSION_STRING="${basicstation_VERSION_SHORT}"
+		VERSION_STRING="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
 )
 
 target_sources(
@@ -333,8 +309,8 @@ endif()
 
 add_executable(${APP} "")
 
-set_target_properties(${APP} PROPERTIES VERSION ${basicstation_VERSION})
-set_target_properties(${APP} PROPERTIES SOVERSION ${basicstation_VERSION_SHORT})
+set_target_properties(${APP} PROPERTIES VERSION ${${CMAKE_PROJECT_NAME}_VERSION_FULL})
+set_target_properties(${APP} PROPERTIES SOVERSION ${${CMAKE_PROJECT_NAME}_VERSION_SHORT})
 
 target_sources(
 		${APP}
