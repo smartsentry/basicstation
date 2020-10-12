@@ -55,6 +55,9 @@ set(VARIANT "std" CACHE STRING "build variant")
 set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
 message("-- Variant: " ${VARIANT})
 
+# -- Uni test option
+option(UNIT_TESTS "Build the unit tests" ON)
+
 if(PLATFORM STREQUAL "corecell")
 	add_subdirectory(deps/lgw1302)
 elseif(PLATFORM STREQUAL "linuxpico")
@@ -393,3 +396,11 @@ install (
 		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# -- if UNIT_TESTS is enabled, enable all unit tests
+if(UNIT_TESTS)
+	add_subdirectory(extern/cpputest)
+	# enable CTest testing
+#	enable_testing()
+	include(unit-test/CMakeLists.txt)
+endif(UNIT_TESTS)
