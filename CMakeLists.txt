@@ -76,124 +76,144 @@ target_compile_options(
 		PUBLIC
 		-Wall
 	#	-Wextra
-		-DCFG_version="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
-		-DCFG_bdate="${DATE}"
-		-DCFG_commit="${COMMIT}"
-		# following four definitions are the same for all platform
-		-DCFG_linux
-		-DCFG_no_leds
-		-DCFG_lgw1
-		-DCFG_tlsdebug
+)
 
-		-DCFG_platform_${PLATFORM}
-		-DCFG_platform="${PLATFORM}"
-		-DCFG_variant_${VARIANT}
-		-DCFG_variant=\"${VARIANT}\"
+target_compile_definitions(
+		${LIB}
+		PUBLIC
+		VERSION_STRING="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
+		CFG_version="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
+		CFG_bdate="${DATE}"
+		CFG_commit="${COMMIT}"
+		# following four definitions are the same for all platform
+		CFG_linux
+		CFG_no_leds
+		CFG_lgw1
+		CFG_tlsdebug
+
+		CFG_platform_${PLATFORM}
+		CFG_platform="${PLATFORM}"
+		CFG_variant_${VARIANT}
+		CFG_variant=\"${VARIANT}\"
 )
 
 # -- Platform options
 if(PLATFORM STREQUAL "corecell")
-	target_compile_options(
+	target_compile_definitions(
 		${LIB} PUBLIC
-		-DCFG_sx1302
+		CFG_sx1302
 	)
 endif()
 
 if(PLATFORM STREQUAL "linuxpico")
-	target_compile_options(
+	target_compile_definitions(
 		${LIB} PUBLIC
-		-DCFG_smtcpico
+		CFG_smtcpico
 	)
 endif()
 
 # -- Variant options
 if(VARIANT STREQUAL "testsim")
 	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=DEBUG
-			-DCFG_selftests
-			-DCFG_lgwsim
-			-DCFG_ral_lgw
-			-O0
-			--coverage
+		${LIB} PUBLIC
+		-O0
+		--coverage
+	)
+
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=DEBUG
+		CFG_selftests
+		CFG_lgwsim
+		CFG_ral_lgw
 	)
 endif()
 
 if(VARIANT STREQUAL "testms")
 	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=DEBUG
-			-DCFG_selftests
-			-DCFG_lgwsim
-			-DCFG_ral_master_slave
-			-O0
-			--coverage
+		${LIB} PUBLIC
+		-O0
+		--coverage
+	)
+
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=DEBUG
+		CFG_selftests
+		CFG_lgwsim
+		CFG_ral_master_slave
 	)
 endif()
 
 if(VARIANT STREQUAL "testfs")
 	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=DEBUG
-			-DCFG_selftests
-			-DCFG_lgwsim
-			-DCFG_ral_lgw
-			-O0
-			--coverage
+		${LIB} PUBLIC
+		-O0
+		--coverage
+	)
+
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=DEBUG
+		CFG_selftests
+		CFG_lgwsim
+		CFG_ral_lgw
 	)
 endif()
 
 if(VARIANT STREQUAL "testpin")
 	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=INFO
-			-DCFG_selftests
-			-DCFG_ral_lgw
-			-DCFG_testpin
-			-O3
+		${LIB} PUBLIC
+		-O3
+	)
+
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=INFO
+		CFG_selftests
+		CFG_ral_lgw
+		CFG_testpin
 	)
 endif()
 
 if(VARIANT STREQUAL "std")
 	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=INFO
-			-DCFG_ral_lgw
-			-O3
+		${LIB} PUBLIC
+		-O3
+	)
+
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=INFO
+		CFG_ral_lgw
 	)
 endif()
 
 if(VARIANT STREQUAL "stdn")
-	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=INFO
-			-DCFG_ral_master_slave
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=INFO
+		CFG_ral_master_slave
 	)
 endif()
 
 if(VARIANT STREQUAL "debug")
-	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=DEBUG
-			-DCFG_selftests
-			-DCFG_ral_lgw
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=DEBUG
+		CFG_selftests
+		CFG_ral_lgw
 	)
 endif()
 
 if(VARIANT STREQUAL "debugn")
-	target_compile_options(
-			${LIB} PUBLIC
-			-DCFG_logini_lvl=DEBUG
-			-DCFG_selftests
-			-DCFG_ral_master_slave
+	target_compile_definitions(
+		${LIB} PUBLIC
+		CFG_logini_lvl=DEBUG
+		CFG_selftests
+		CFG_ral_master_slave
 	)
 endif()
-
-target_compile_definitions(
-		${LIB}
-		PRIVATE
-		VERSION_STRING="${${CMAKE_PROJECT_NAME}_VERSION_FULL}"
-)
 
 target_sources(
 		${LIB}
