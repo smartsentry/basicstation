@@ -182,7 +182,9 @@ endif()
 if(VARIANT STREQUAL "std")
 	target_compile_options(
 		${LIB} PUBLIC
-		-O3
+#		-O3
+		-O0
+		-g
 	)
 
 	target_compile_definitions(

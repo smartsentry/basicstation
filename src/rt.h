@@ -114,7 +114,9 @@ void   dbuf_free (dbuf_t* b);
 // --------------------------------------------------------------------------------
 
 /* log levels */
-enum { XDEBUG=0U, DEBUG, VERBOSE, INFO, NOTICE, WARNING, ERROR, CRITICAL };  // must be 8!
+enum { XDEBUG=0, DEBUG, VERBOSE, INFO, NOTICE, WARNING, ERROR, CRITICAL };  // must be 8!
+
+// NOTE: aligment with 8
 enum { MOD_ANY= 0*8, MOD_RAL= 1*8, MOD_S2E= 2*8, MOD_WSS= 3*8,
        MOD_JSN= 4*8, MOD_AIO= 5*8, MOD_CUP= 6*8, MOD_SYS= 7*8,
        MOD_TCE= 8*8, MOD_TST= 9*8, MOD_SIO=10*8, MOD_SYN=11*8,
@@ -148,8 +150,8 @@ void  log_flushIO ();
 #define CFG_loglvl_exclude -1
 #endif
 #define LOG(level, fmt, ...) {                                  \
-        if( !((1U<<((level)>>3U)) & (CFG_logmod_exclude)) &&      \
-            ((level) & 7U) > (CFG_loglvl_exclude) &&             \
+        if( !((1<<((level)>>3)) & (CFG_logmod_exclude)) &&      \
+            ((level) & 7) > (CFG_loglvl_exclude) &&             \
             log_shallLog(level) ) {                             \
             log_msg((level), fmt, ## __VA_ARGS__);              \
         }                                                       \
@@ -219,16 +221,20 @@ struct datetime rt_datetime (ustime_t ustime);
 #define rt_seconds_ahead(n) (rt_getTime()+rt_seconds(n))
 #define rt_millis_ahead(n)  (rt_getTime()+rt_millis(n))
 
+// TODO: do not know jet what is used for
 u2_t rt_rlsbf2 (const u1_t* buf);
 u2_t rt_rmsbf2 (const u1_t* buf);
 u4_t rt_rlsbf4 (const u1_t* buf);
 uL_t rt_rlsbf8 (const u1_t* buf);
 
-/* rt strdup* functions */
+/* runtime whole string duplication */
 char*   rt_strdup   (str_t s);
+/* runtime n-bytes string duplication */
 char*   rt_strdupn  (str_t s, int n);
+/* runtime whole string duplication with quote */
 char*   rt_strdupq  (str_t s);
 
+// runtime malloc = malloc + log
 void*  _rt_malloc   (int size, int zero);
 void*  _rt_malloc_d (int size, int zero, const char* f, int l);
 void   _rt_free_d   (void* p, const char* f, int l);

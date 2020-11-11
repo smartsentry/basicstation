@@ -230,17 +230,16 @@ u2_t rt_rlsbf2 (const u1_t* buf) {
 }
 
 u2_t rt_rmsbf2 (const u1_t* buf) {
-    return (u2_t)((buf[0]<<8) | buf[1]);
+    return (u2_t)((buf[0]<<8U) | buf[1]);
 }
 
 u4_t rt_rlsbf4 (const u1_t* buf) {
-    return (u4_t)(buf[0] | (buf[1]<<8) | ((u4_t)buf[2]<<16) | ((u4_t)buf[3]<<24));
+    return (u4_t)(buf[0] | (buf[1]<<8U) | ((u4_t)buf[2]<<16U) | ((u4_t)buf[3]<<24));
 }
 
 uL_t rt_rlsbf8 (const u1_t* buf) {
     return rt_rlsbf4(buf) | ((uL_t)rt_rlsbf4(buf+4) << 32);
 }
-
 
 void* _rt_malloc(int size, int zero) {
     void* p = malloc(size);
@@ -251,6 +250,7 @@ void* _rt_malloc(int size, int zero) {
     return p;
 }
 
+// runtime malloc with debug = malloc + log + FILE * LINE
 void* _rt_malloc_d(int size, int zero, const char* f, int l) {
     void* p = _rt_malloc(size, zero);
     LOG (XDEBUG, "  rt_malloc(%d) %s:%d -> %p", size, f, l, p);

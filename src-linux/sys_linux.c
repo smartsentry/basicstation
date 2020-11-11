@@ -1072,7 +1072,9 @@ int sys_main (int argc, char** argv) {
     if( getcwd(cwd, sizeof(cwd)) != NULL )
         fs_chdir(cwd);
 
+    // init s2conf
     s2conf_ini();
+    
     logfile.size = LOGFILE_SIZE;
     logfile.rotate = LOGFILE_ROTATE;
     setHomeDir(".", "builtin");
@@ -1236,6 +1238,7 @@ int sys_main (int argc, char** argv) {
     if( !checkUris() )
         return 1;
 
+    // process daemon
     if( daemon ) {
         if( logfile.path == NULL ) {
             setLogFile("~temp/station.log", "builtin");  // change default stderr to a file
