@@ -138,6 +138,7 @@ void rt_ini() {
 ATTR_FASTCODE
 ustime_t rt_processTimerQ () {
     while(1) {
+        // if there is no more timer registered
         if( timerQ == TMR_END )
             return USTIME_MAX;
 #if defined(CFG_timerfd)
@@ -146,15 +147,22 @@ ustime_t rt_processTimerQ () {
             return deadline;
 #else // !defined(CFG_timerfd)
         ustime_t ahead;
+        // check the first timer in the time queue
+        // the timer is not expired
         if( (ahead = timerQ->deadline - rt_getTime()) > 0 )
             return ahead;
 #endif // !defined(CFG_timerfd)
+        // the timer is expired
         tmr_t* expired = timerQ;
+        // assign the timer queue header to the next timer
         timerQ = expired->next;
+        // deattach the expired timer from timer queue
         expired->next = TMR_NIL;
         if (expired->callback) {
+            // call the timer callback function
             expired->callback(expired);
         } else {
+            // the time must have a callback function ?
             LOG(ERROR, "Timer due with NULL callback (tmr %p)", expired);
         }
     }
@@ -163,7 +171,7 @@ ustime_t rt_processTimerQ () {
 
 void rt_iniTimer (tmr_t* tmr, tmrcb_t callback) {
     tmr->next     = TMR_NIL;
-    tmr->deadline = rt_getTime();
+    tmr->deadline = rt_getTime(); // get current time from system start, expired immediately
     tmr->callback = callback;
     tmr->ctx      = NULL;
 }
@@ -182,7 +190,9 @@ void rt_setTimer (tmr_t* tmr, ustime_t deadline) {
         rt_clrTimer(tmr); // still active
     tmr->deadline = deadline;
     tmr_t *p, **pp = &timerQ;
+    // loop the timer queue to locate a position where the deadline is smaller than the next one
     while( (p = *pp) != TMR_END ) {
+        // the time queue is ordered according to deadline, so it will always check the head of timer queue
         if( deadline < p->deadline )
             break;
         pp = &p->next;

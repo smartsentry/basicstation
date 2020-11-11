@@ -101,6 +101,11 @@ void   dbuf_free (dbuf_t* b);
 // Convert a pointer to a member to pointer to struct
 #define memberof(type, memberp, member) ((type*)((u1_t*)(memberp) - offsetof(type, member)))
 
+// copy from Linux kernel
+#define container_of(ptr, type, member) ({                      \
+        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+        (type *)( (char *)__mptr - offsetof(type,member) );})
+
 
 // --------------------------------------------------------------------------------
 //
@@ -108,7 +113,8 @@ void   dbuf_free (dbuf_t* b);
 //
 // --------------------------------------------------------------------------------
 
-enum { XDEBUG=0, DEBUG, VERBOSE, INFO, NOTICE, WARNING, ERROR, CRITICAL };  // must be 8!
+/* log levels */
+enum { XDEBUG=0U, DEBUG, VERBOSE, INFO, NOTICE, WARNING, ERROR, CRITICAL };  // must be 8!
 enum { MOD_ANY= 0*8, MOD_RAL= 1*8, MOD_S2E= 2*8, MOD_WSS= 3*8,
        MOD_JSN= 4*8, MOD_AIO= 5*8, MOD_CUP= 6*8, MOD_SYS= 7*8,
        MOD_TCE= 8*8, MOD_TST= 9*8, MOD_SIO=10*8, MOD_SYN=11*8,
@@ -142,8 +148,8 @@ void  log_flushIO ();
 #define CFG_loglvl_exclude -1
 #endif
 #define LOG(level, fmt, ...) {                                  \
-        if( !((1<<((level)>>3)) & (CFG_logmod_exclude)) &&      \
-            ((level) & 7) > (CFG_loglvl_exclude) &&             \
+        if( !((1U<<((level)>>3U)) & (CFG_logmod_exclude)) &&      \
+            ((level) & 7U) > (CFG_loglvl_exclude) &&             \
             log_shallLog(level) ) {                             \
             log_msg((level), fmt, ## __VA_ARGS__);              \
         }                                                       \
@@ -157,7 +163,9 @@ void  log_flushIO ();
 //
 // --------------------------------------------------------------------------------
 
+/* Timer */
 struct tmr;
+/* Timer callback function */
 typedef void (*tmrcb_t)(struct tmr* tmr);
 typedef struct tmr {
     struct tmr* next;
@@ -170,15 +178,27 @@ typedef struct tmr {
 #define TMR_NIL ((tmr_t*)0) // Timer not queued for timeout
 #define TMR_END ((tmr_t*)1) // End of timer queue
 
+// init time queue
 void rt_iniTimer  (tmr_t* tmr, tmrcb_t callback);
+
+// insert a timer into timer queue
 void rt_setTimer  (tmr_t* tmr, ustime_t deadline);
+
+// restart a timer ?
 void rt_setTimerCb(tmr_t* tmr, ustime_t deadline, tmrcb_t callback);
 void rt_clrTimer  (tmr_t* tmr);
 void rt_yieldTo   (tmr_t* tmr, tmrcb_t callback);
 
+/* runtime ini */
 void     rt_ini();
+
+/* runtime with fatal error */
 void     rt_fatal(const char* fmt, ...);
+
+// process timer queue
 ustime_t rt_processTimerQ();
+
+// get EUI
 uL_t     rt_eui();
 
 void rt_usleep (ustime_t us);
@@ -186,7 +206,9 @@ void rt_usleep (ustime_t us);
 extern ustime_t rt_utcOffset;
 extern ustime_t rt_utcOffset_ts;
 
+// get microsecond from system start
 ustime_t rt_getTime ();
+
 ustime_t rt_getUTC ();
 ustime_t rt_ustime2utc (ustime_t ustime);
 struct datetime rt_datetime (ustime_t ustime);
@@ -202,6 +224,7 @@ u2_t rt_rmsbf2 (const u1_t* buf);
 u4_t rt_rlsbf4 (const u1_t* buf);
 uL_t rt_rlsbf8 (const u1_t* buf);
 
+/* rt strdup* functions */
 char*   rt_strdup   (str_t s);
 char*   rt_strdupn  (str_t s, int n);
 char*   rt_strdupq  (str_t s);
@@ -211,6 +234,7 @@ void*  _rt_malloc_d (int size, int zero, const char* f, int l);
 void   _rt_free_d   (void* p, const char* f, int l);
 
 #if defined(CFG_variant_debug)
+/* rt malloc with debug */
 #define rt_malloc(type)      ((type*)_rt_malloc_d(sizeof(type), 1, __FILE__, __LINE__))
 #define rt_mallocN(type,num) ((type*)_rt_malloc_d(sizeof(type)*(num), 1, __FILE__, __LINE__))
 #define rt_free(p)           _rt_free_d(p, __FILE__, __LINE__)

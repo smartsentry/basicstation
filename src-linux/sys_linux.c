@@ -423,7 +423,7 @@ void sys_usleep (sL_t us) {
 
 sL_t sys_time () {
     struct timespec tp;
-    int err = clock_gettime(CLOCK_MONOTONIC, &tp);
+    int err = clock_gettime(CLOCK_MONOTONIC, &tp); // get time from system start, unchangeable
     if( err == -1 )
         rt_fatal("clock_gettime(2) failed: %s\n", strerror(errno));      // LCOV_EXCL_LINE
     return tp.tv_sec*(sL_t)1000000 + tp.tv_nsec/1000;
@@ -432,7 +432,7 @@ sL_t sys_time () {
 
 sL_t sys_utc () {
     struct timespec tp;
-    int err = clock_gettime(CLOCK_REALTIME, &tp);
+    int err = clock_gettime(CLOCK_REALTIME, &tp); // get time from UTC 1970-1-1 0:0:0, changeable
     if( err == -1 )
         rt_fatal("clock_gettime(2) failed: %s\n", strerror(errno));      // LCOV_EXCL_LINE
     return (tp.tv_sec*(sL_t)1000000 + tp.tv_nsec/1000);

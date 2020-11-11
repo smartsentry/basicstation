@@ -49,7 +49,10 @@ int  sys_random (u1_t* buf, int len);
 #else
 void  sys_seed (u1_t* seed, int len);       // sys provides high quality seeds to grow randomness
 #endif
+
+// get microsecond from system start
 sL_t  sys_time ();
+
 sL_t  sys_utc  ();  // native UTC time - return 0 if not avail.
 uL_t  sys_eui  ();
 void  sys_usleep(sL_t us);
