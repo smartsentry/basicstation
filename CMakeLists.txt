@@ -270,7 +270,7 @@ message(STATUS  ${MBEDTLS_LIBRARIES})
 
 target_include_directories(
 		${LIB}
-		PRIVATE
+		PUBLIC
 		${CMAKE_CURRENT_LIST_DIR}/src
 		${CMAKE_CURRENT_LIST_DIR}/src-linux
 		${MBEDTLS_INCLUDE_DIR}
