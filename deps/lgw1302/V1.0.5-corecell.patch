@@ -298,16 +298,18 @@ index 77c3d4d..487283f 100644
  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
  
  int timestamp_counter_mode(bool enable_precision_ts, uint8_t max_ts_metrics, uint8_t nb_symbols) {
-diff --git a/deps/lgw1302/prep.sh b/deps/lgw1302/prep.sh
-index 7939e5b..7a367e4 100755
---- a/deps/lgw1302/prep.sh
-+++ b/deps/lgw1302/prep.sh
-@@ -32,7 +32,7 @@ cd $(dirname $0)
- lgwversion="V${lgwversion:-1.0.5}"
+diff --git a/packet_forwarder/src/jitqueue.c b/packet_forwarder/src/jitqueue.c
+index 22ec701..748843d 100644
+--- a/packet_forwarder/src/jitqueue.c
++++ b/packet_forwarder/src/jitqueue.c
+@@ -112,8 +112,8 @@ void jit_sort_queue(struct jit_queue_s *queue) {
+     }
 
- if [[ ! -d git-repo ]]; then
--    git clone https://github.com/smartsentry/sx1302_hal.git git-repo
-+    git clone https://github.com/smartsentry/sx1302_hal.git -B openwrt git-repo
- fi
+     MSG_DEBUG(DEBUG_JIT, "sorting queue in ascending order packet timestamp - queue size:%u\n", queue->num_pkt);
+-    qsort_r(queue->nodes, queue->num_pkt, sizeof(queue->nodes[0]), compare, &counter);
+-    MSG_DEBUG(DEBUG_JIT, "sorting queue done - swapped:%d\n", counter);
++    qsort(queue->nodes, queue->num_pkt, sizeof(queue->nodes[0]), compare);
++    MSG_DEBUG(DEBUG_JIT, "sorting queue done\n");
+ }
 
- if [[ -z "${platform}" ]] || [[ -z "${variant}" ]]; then
+ bool jit_collision_test(uint32_t p1_count_us, uint32_t p1_pre_delay, uint32_t p1_post_delay, uint32_t p2_count_us, uint32_t p2_pre_delay, uint32_t p2_post_delay) {
