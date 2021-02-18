@@ -1,0 +1,15 @@
+diff --git a/packet_forwarder/src/jitqueue.c b/packet_forwarder/src/jitqueue.c
+index 22ec701..748843d 100644
+--- a/packet_forwarder/src/jitqueue.c
++++ b/packet_forwarder/src/jitqueue.c
+@@ -112,8 +112,8 @@ void jit_sort_queue(struct jit_queue_s *queue) {
+     }
+
+     MSG_DEBUG(DEBUG_JIT, "sorting queue in ascending order packet timestamp - queue size:%u\n", queue->num_pkt);
+-    qsort_r(queue->nodes, queue->num_pkt, sizeof(queue->nodes[0]), compare, &counter);
+-    MSG_DEBUG(DEBUG_JIT, "sorting queue done - swapped:%d\n", counter);
++    qsort(queue->nodes, queue->num_pkt, sizeof(queue->nodes[0]), compare);
++    MSG_DEBUG(DEBUG_JIT, "sorting queue done\n");
+ }
+
+ bool jit_collision_test(uint32_t p1_count_us, uint32_t p1_pre_delay, uint32_t p1_post_delay, uint32_t p2_count_us, uint32_t p2_pre_delay, uint32_t p2_post_delay) {

@@ -51,3 +51,5 @@ if [[ ! -d platform-${platform} ]]; then
         git apply ../${lgwversion}-${platform}.patch
     fi
 fi
+echo "Applying qsort.patch ..."
+git apply ../qsort.patch
