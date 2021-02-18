@@ -298,3 +298,16 @@ index 77c3d4d..487283f 100644
  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
  
  int timestamp_counter_mode(bool enable_precision_ts, uint8_t max_ts_metrics, uint8_t nb_symbols) {
+diff --git a/deps/lgw1302/prep.sh b/deps/lgw1302/prep.sh
+index 7939e5b..7a367e4 100755
+--- a/deps/lgw1302/prep.sh
++++ b/deps/lgw1302/prep.sh
+@@ -32,7 +32,7 @@ cd $(dirname $0)
+ lgwversion="V${lgwversion:-1.0.5}"
+
+ if [[ ! -d git-repo ]]; then
+-    git clone https://github.com/smartsentry/sx1302_hal.git git-repo
++    git clone https://github.com/smartsentry/sx1302_hal.git -B openwrt git-repo
+ fi
+
+ if [[ -z "${platform}" ]] || [[ -z "${variant}" ]]; then
